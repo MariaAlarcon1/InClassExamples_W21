@@ -29,7 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:src="@drawable/avatar3" />
-    <CheckBox
+    <RadioButton
+        android:id="@+id/myCb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/cbox"/>
