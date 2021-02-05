@@ -10,16 +10,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.InClassExamples_W21">
-        <activity android:name=".PrebuiltIntentExamples" />
-        <activity android:name=".SecondActivity"/>
-        <activity android:name=".FirstActivity">
+        <!-- This activity is part of your application: -->
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>
