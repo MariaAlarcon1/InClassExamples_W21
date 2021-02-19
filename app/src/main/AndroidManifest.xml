@@ -9,7 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.InClassExamples_W21">
-        <activity android:name=".FirstActivity">
+
+        <!-- This activity is part of your application: -->
+
+        <activity android:name="com.cst2335.inclassexamples_w21.DatabaseExample" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
