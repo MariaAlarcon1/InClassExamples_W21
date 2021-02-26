@@ -12,7 +12,7 @@
 
         <!-- This activity is part of your application: -->
 
-        <activity android:name="com.cst2335.inclassexamples_w21.DatabaseExample" >
+        <activity android:name=".MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
