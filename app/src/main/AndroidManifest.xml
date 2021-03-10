@@ -12,7 +12,7 @@
 
         <!-- This activity is part of your application: -->
 
-        <activity android:name=".MainActivity" >
+        <activity android:name=".FragmentExample" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
