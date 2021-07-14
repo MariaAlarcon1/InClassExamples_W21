@@ -10,6 +10,9 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -54,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                         //connect to the server:
                         String serverURL = "https://api.openweathermap.org/data/2.5/weather?q="
                                 + URLEncoder.encode(theEdit.getText().toString(), "UTF-8")
-                                + "&appid=7e943c97096a9784391a981c4d878b22&units=metric";
+                                + "&appid=7e943c97096a9784391a981c4d878b22&units=metric&mode=xml";
 
 
                         //on other cpu:
@@ -62,13 +65,71 @@ public class MainActivity extends AppCompatActivity {
                         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                         InputStream in = new BufferedInputStream(urlConnection.getInputStream());
 
+                        //USE XML:
+
+                        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+                        // ignore namespaces:
+                        factory.setNamespaceAware(false);
+
+                        //create the object
+                        XmlPullParser xpp = factory.newPullParser();
+                        //read from in, like Scanner
+                        xpp.setInput( in  , "UTF-8");
+                        //xpp is now pointing at BEGIN_DOCUMENT
+                        //like Cursor starts at row -1
+
+                        //int eventType = xpp.getEventType();
+                        String currentTemp;
+                        String minTemp;
+                        String maxTemp;
+                        String value;
+                        //move xpp to first element:
+                        while(xpp.next() != XmlPullParser.END_DOCUMENT)
+                        {  //what are we currently pointing at?
+                            switch(xpp.getEventType())
+                            {
+                                case XmlPullParser.START_DOCUMENT:
+                                    break;
+                                case XmlPullParser.END_DOCUMENT:
+                                    break;
+                                case   XmlPullParser.START_TAG:
+                                    //look for temperature
+                                    if(xpp.getName().equals("movie")) //which opening tag are we looking at?
+                                    {
+                                         currentTemp = xpp.getAttributeValue(null, "runtime");
+                                         minTemp = xpp.getAttributeValue(null, "year");
+                                         maxTemp = xpp.getAttributeValue(null, "max");
+                                    }
+                                    else if(xpp.getName().equals("weather"))
+                                    {
+                                         value = xpp.getAttributeValue(null, "value");
+                                    }
+                                    else if(xpp.getName().equals("Longitude")) {
+                                        //
+                                        xpp.next();//move forward one positoin:
+                                        xpp.getText();//return string
+
+
+                                        xpp.nextText();//advances and get text:
+
+                                    }
+                                    break;
+                                case XmlPullParser.END_TAG:
+                                    break;
+                                case   XmlPullParser.TEXT:
+                                    break;
+                            }
+                        }
+
+
+                        /*commented out for now
+                        //convert string to JSON object:
+
                         //this converts to a String
                         String text = (new BufferedReader(
                                 new InputStreamReader(in, StandardCharsets.UTF_8)))
                                 .lines()
                                 .collect(Collectors.joining("\n"));
-
-                        //convert string to JSON object:
 
                         JSONObject theDocument = new JSONObject( text );
                         JSONObject coord = theDocument.getJSONObject("coord");
@@ -82,8 +143,10 @@ public class MainActivity extends AppCompatActivity {
                         double min = main.getDouble("temp_min");
                         double max = main.getDouble("temp_max");
 
+                         */
+
                     }
-                    catch (IOException | JSONException e) {
+                    catch (IOException | XmlPullParserException e) {
                         e.printStackTrace();
                     }
 
