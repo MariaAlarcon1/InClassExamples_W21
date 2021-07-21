@@ -1,15 +1,18 @@
 package com.cst2335.inclassexamples_w21;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -34,10 +37,52 @@ public class MainActivity extends AppCompatActivity {
     EditText theEdit;
     TextView tv;
     Button btn;
+boolean isHidden = false;
+
+//called when user an item:
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch( item.getItemId() )
+        {
+            case R.id.hide_views:
+                isHidden = !isHidden;
+                tv.setVisibility( (isHidden)?View.INVISIBLE:View.VISIBLE );
+                break;
+            case R.id.increase:
+                float oldSize = theEdit.getTextSize();
+                float newSize = Float.max(oldSize - 1, 5);
+
+                tv.setTextSize(newSize);
+                theEdit.setTextSize(newSize);
+                btn.setTextSize(newSize);
+                break;
+
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    //initializes toolbar:
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        //only change change the R.menu file
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate( R.menu.my_menu, menu);
+
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //getting a toolbar:
+        Toolbar myToolbar = findViewById(R.id.myToolbar);
+        setSupportActionBar(myToolbar); //Android calls onCreateOptionsMenu to inflate the menu
 
         tv = findViewById(R.id.textView);
         btn = findViewById(R.id.theButton);
