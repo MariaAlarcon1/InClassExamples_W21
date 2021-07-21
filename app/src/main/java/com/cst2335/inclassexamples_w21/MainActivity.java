@@ -1,8 +1,11 @@
 package com.cst2335.inclassexamples_w21;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 
 import android.os.Bundle;
@@ -13,6 +16,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -44,19 +51,30 @@ boolean isHidden = false;
     public boolean onOptionsItemSelected(MenuItem item) {
         switch( item.getItemId() )
         {
+            case R.id.nav_clear:
             case R.id.hide_views:
                 isHidden = !isHidden;
                 tv.setVisibility( (isHidden)?View.INVISIBLE:View.VISIBLE );
                 break;
+            case R.id.nav_increase:
             case R.id.increase:
+
                 float oldSize = theEdit.getTextSize();
-                float newSize = Float.max(oldSize - 1, 5);
+                float newSize = Float.max(oldSize + 1, 5);
 
                 tv.setTextSize(newSize);
                 theEdit.setTextSize(newSize);
                 btn.setTextSize(newSize);
                 break;
+            case R.id.nav_decrease:
 
+                oldSize = theEdit.getTextSize();
+                newSize = Float.max(oldSize - 10, 5);
+
+                tv.setTextSize(newSize);
+                theEdit.setTextSize(newSize);
+                btn.setTextSize(newSize);
+                break;
         }
 
 
@@ -84,6 +102,26 @@ boolean isHidden = false;
         Toolbar myToolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(myToolbar); //Android calls onCreateOptionsMenu to inflate the menu
 
+        //drawer layout: Need <DrawerLayout >
+        DrawerLayout drawer = findViewById(R.id.myDrawerLayout);
+                                                                                    //Generate Open and Close strings
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, myToolbar, R.string.open, R.string.close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navView = findViewById(R.id.myNavView);
+        navView.setNavigationItemSelectedListener( (item) -> {
+               onOptionsItemSelected(item); //let the other function handle it
+            drawer.closeDrawer(GravityCompat.START);//this closes the drawer
+                return false;
+        });
+
+//bottom nav view:
+        BottomNavigationView bView = findViewById(R.id.bottomNav);
+        bView.setOnNavigationItemReselectedListener((item) -> {
+            onOptionsItemSelected(item);
+        });
+
         tv = findViewById(R.id.textView);
         btn = findViewById(R.id.theButton);
         theEdit = findViewById(R.id.editText);
@@ -91,6 +129,7 @@ boolean isHidden = false;
 
         btn.setOnClickListener( click -> {
 
+String cityName = theEdit.getText().toString();
 
 
              //still on GUI thread, can't connect to server here
@@ -101,7 +140,7 @@ boolean isHidden = false;
                     try {
                         //connect to the server:
                         String serverURL = "https://api.openweathermap.org/data/2.5/weather?q="
-                                + URLEncoder.encode(theEdit.getText().toString(), "UTF-8")
+                                + URLEncoder.encode(cityName, "UTF-8")
                                 + "&appid=7e943c97096a9784391a981c4d878b22&units=metric&mode=xml";
 
 
